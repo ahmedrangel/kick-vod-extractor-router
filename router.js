@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { error, Router } from "itty-router";
 import JsResponse from "./JsResponse.js";
 import CustomResponse from "./CustomResponse.js";
+import { getOrigin } from "./functions.js";
 const router = Router();
 
 router
@@ -24,7 +25,8 @@ router
       quality.push({quality: elem, playlist: playlist});
     });
     console.info(quality);
-    return new JsResponse(quality);
+    const options = {origin: getOrigin(req)};
+    return new JsResponse(quality, options);
   })
   // STEP 2: receive a playlist.m3u8 URL and send total segments and duration
   .get("/segments?", async (req) => { 
@@ -43,7 +45,8 @@ router
       add += value;
     }
     const json = {segments: segments, duration: add};
-    return new JsResponse(json);
+    const options = {origin: getOrigin(req)};
+    return new JsResponse(json, options);
 
   })
   // STEP 3: receive master URL, selected quality, start time and total segments. Then, send MP2T Array Buffer (.ts file)
@@ -84,7 +87,7 @@ router
         console.info("Error al crear el Blob:", error);
       });
     console.info(aB);
-    return new CustomResponse(aB, {type: "video/MP2T"});
+    return new CustomResponse(aB, {type: "video/MP2T", origin: getOrigin(req)});
   })
 
   .all("*", () => new Response("Not Found.", {status:404}));

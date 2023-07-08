@@ -1,4 +1,6 @@
+const website = "https://kickclips.ahmedrangel.com";
 export const CONSTANTS = {
-  origin: "https://kickclips.ahmedrangel.com",
-  port: 1515
+  website: website,
+  port: 1515,
+  whitelist: [website, "http://localhost:3000", "https://fiddle.jshell.net"]
 };
