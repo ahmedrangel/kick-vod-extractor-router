@@ -9,7 +9,7 @@ const router = Router();
 
 router
   .get("/", () => "Success!")
-  // STEP 1: get qualities and playlists from master.m3u8 url (obtained from fetching https://kick.com/api/v1/video/:ID)
+  // STEP 1: receive master URL and send playlist.m3u8 URLs and available qualities for each one
   .get("/qualities?", async (req) => {
     const { query } = req;
     const master = decodeURIComponent(query.master);
@@ -26,7 +26,7 @@ router
     console.info(quality);
     return new JsResponse(quality);
   })
-  // STEP 2: get segments and duration from playlist.m3u8 url
+  // STEP 2: receive a playlist.m3u8 URL and send total segments and duration
   .get("/segments?", async (req) => { 
     const { query } = req;
     const url = decodeURIComponent(query.playlist);
@@ -46,7 +46,7 @@ router
     return new JsResponse(json);
 
   })
-  // get merged segments into array buffer video/mp2t (.ts file)
+  // STEP 3: receive master URL, selected quality, start time and total segments. Then, send MP2T Array Buffer (.ts file)
   .get("/extract?", async (req) => {
     const { query } = req;
     const quality = query.quality; // selected quality
@@ -55,10 +55,10 @@ router
     const end = Number(query.end); // end (total segments to merge) (int)
     console.info(start);
     console.info(end);
-    const playlist = master.replace("master.m3u8", "") + quality + "/playlist.m3u8";
+    const playlist = master.replace("master.m3u8", "") + quality + "/playlist.m3u8"; // playlist URL
     console.info(playlist);
     const stream = m3u8stream(playlist, { begin: start });
-    function streamToArrayBuffer(stream) {
+    const streamToArrayBuffer = (stream) => {
       return new Promise((resolve, reject) => {
         const chunks = [];
         stream.on("data", (chunk) => chunks.push(chunk));
@@ -75,7 +75,7 @@ router
         });
         stream.on("error", reject);
       });
-    }
+    };
     const aB = await streamToArrayBuffer(stream)
       .then((aB) => {
         return aB;
