@@ -1,5 +1,10 @@
 {
 	"type": "module",
+	"engines": {
+		"node": ">=15.0.0",
+		"npm": "<=9.6.2",
+		"pnpm": "<=8.5.1"
+	},
 	"dependencies": {
 		"@whatwg-node/server": "^0.9.2",
 		"eslint": "^8.44.0",
@@ -7,5 +12,8 @@
 		"isomorphic-fetch": "^3.0.0",
 		"itty-router": "^4.0.14",
 		"m3u8stream": "^0.8.6"
+	},
+	"scripts": {
+		"start": "node server.js"
 	}
 }
