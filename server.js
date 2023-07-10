@@ -29,7 +29,7 @@ router
     const options = {origin: getOrigin(req)};
     return new JsResponse(quality, options);
   })
-  // STEP 2: receive a playlist.m3u8 URL and send total segments and duration
+  // STEP 2: receive a playlist.m3u8 URL and send total segments and duration response
   .get("/segments?", async (req) => { 
     const { query } = req;
     const url = decodeURIComponent(query.playlist);
@@ -50,7 +50,7 @@ router
     return new JsResponse(json, options);
 
   })
-  // STEP 3: receive master URL, selected quality, start time and total segments. Then, send MP2T Array Buffer (.ts file)
+  // STEP 3: receive master URL, selected quality, start time and total segments. Then, send MP2T Array Buffer response (.ts file)
   .get("/extract?", async (req) => {
     const { query } = req;
     const quality = query.quality; // selected quality
